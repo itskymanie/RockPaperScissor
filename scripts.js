@@ -1,47 +1,83 @@
 
-let playerSelection = getPlayerChoice();
-let computerSelection = getComputerChoice();
-console.log(playerSelection);
-console.log(computerSelection);
+let computerScore = 0;
+let playerScore = 0;
 
-playGame(playerSelection, computerSelection);
+const container = document.getElementById("container");
 
+const rockButton = createButton("Rock", "Rock");
+const scissorButton = createButton("Scissors", "Scissors");
+const paperButton = createButton("Paper", "Paper");
+const results = document.createElement("div");
+const score = document.createElement("div");
 
-function getComputerChoice(){
-    let moves = Array("rock", "paper", "scissors");
+container.appendChild(rockButton);
+container.appendChild(scissorButton);
+container.appendChild(paperButton);
+container.appendChild(results);
+container.appendChild(score);
+
+function createButton(text, selection)
+{
+    const button = document.createElement("button");
+    button.textContent = text;
+
+    button.addEventListener("click", function() {
+        playGame(selection);
+    });
+
+    return button;
+}
+
+function playGame(playerSelection)
+{
+    let computerSelection = getComputerChoice();
+
+    if (playerSelection === computerSelection){
+        results.textContent =("You Draw! Both chose " + playerSelection + ".\n");
+    } 
+    else if(
+        (playerSelection === "Rock" && computerSelection === "Scissors") ||
+        (playerSelection === "Paper" && computerSelection === "Rock") ||
+        (playerSelection === "Scissors" && computerSelection === "Paper")
+    ) 
+    {
+        displayRound("player", playerSelection, computerSelection);
+    } 
+    else
+    {
+        displayRound("computer", playerSelection, computerSelection);
+    }
+}
+
+function getComputerChoice()
+{
+    let moves = Array("Rock", "Paper", "Scissors");
     return moves[Math.floor(Math.random()* moves.length)];
 }
 
-function playGame(playerSelection, computerSelection){
-    playerSelection= playerSelection.replace(/ /g,'');
-    playerSelection= playerSelection.toLowerCase();
+function displayRound (winner, playerSelection, computerSelection)
+{
+    if(winner === "player")
+    {
+        playerScore++;
+        results.textContent = ("You win! " + playerSelection + " beats " + computerSelection + ".");
+        score.textContent = ("Player : " + playerScore + " Computer : " + computerScore);
+    }
+    else if(winner === "computer")
+    {
+        computerScore++;
+        results.textContent = ("You lose! " + computerSelection + " beats " + playerSelection + ".");
+        score.textContent = ("Player : " + playerScore + " Computer : " + computerScore);
+    }
 
-    if (playerSelection == computerSelection){
-        console.log("You Draw! Both did " + playerSelection);
-    }
-    else if(playerSelection == "rock" && computerSelection == "scissors"){
-        console.log("You win! Rock beats Scissors.");
-    }
-    else if(playerSelection == "rock" && computerSelection == "paper"){
-        console.log("You lose! Paper beats Rock.");
-    }
-    else if(playerSelection == "paper" && computerSelection == "rock"){
-        console.log("You win! Paper beats Rock.");
-    }
-    else if(playerSelection == "paper" && computerSelection == "scissor"){
-        console.log("You lose! Scissor beats Paper.");
-    }
-    else if(playerSelection == "scissor" && computerSelection == "rock"){
-        console.log("You lose! Rock beats scissors.");
-    }
-    else if(playerSelection == "scissors" && computerSelection == "paper"){
-        console.log("You win! Scissors beats Paper.");
-    }
-    else{
-        console.log("Error Baby!");
-    }
-}
-
-function getPlayerChoice(){
-    return prompt("Pick one : Rock , Paper, Scissors. : ");
+    if (playerScore === 5)
+        {
+            score.textContent = ("You win with 5 points.");
+            playerScore = computerScore = 0;
+        }
+        else if (computerScore === 5)
+        {
+            score.textContent = ("Imagine losing. Computer with 5 points.");
+            playerScore = computerScore = 0;
+        }
 }
